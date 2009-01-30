@@ -81,7 +81,12 @@ module SimpleDaemon
         trap("TERM") {daemon.stop; exit}
         daemon.start
       end
-      puts "Daemon started."
+      sleep(1) # Give daemon time to start
+      if PidFile.sane?(daemon)
+        puts "Daemon started."
+      else
+        puts "Daemon failed to start."
+      end
     end
 
     def self.stop(daemon)
