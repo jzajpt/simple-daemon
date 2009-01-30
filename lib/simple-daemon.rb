@@ -36,6 +36,7 @@ module SimpleDaemon
       IO.read(daemon.pid_fn).to_i rescue nil
     end
     
+    # Returns true if PID file is sane (process exists)
     def self.sane?(daemon)
       pid = recall(daemon)
       Process.getpgid(pid)
@@ -58,7 +59,7 @@ module SimpleDaemon
         stop(daemon)
         start(daemon)
       else
-        puts "Invalid command. Please specify start, stop or restart."
+        puts "Invalid command. Please specify start, stop, restart or status."
         exit
       end
     end
