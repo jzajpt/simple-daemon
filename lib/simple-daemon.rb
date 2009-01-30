@@ -35,6 +35,14 @@ module SimpleDaemon
     def self.recall(daemon)
       IO.read(daemon.pid_fn).to_i rescue nil
     end
+    
+    def self.sane?(daemon)
+      pid = recall(daemon)
+      Process.getpgid(pid)
+      true
+    rescue Errno::ESRCH
+      false
+    end
   end
 
   module Controller
@@ -44,6 +52,8 @@ module SimpleDaemon
         start(daemon)
       when 'stop'
         stop(daemon)
+      when 'status'
+        status(daemon)
       when 'restart'
         stop(daemon)
         start(daemon)
@@ -84,6 +94,19 @@ module SimpleDaemon
       pid && Process.kill("TERM", pid)
     rescue Errno::ESRCH
       puts "Pid file found, but process was not running. The daemon may have died."
+    end
+    
+    def self.status(daemon)
+      if !File.file?(daemon.pid_fn)
+        puts "Daemon is not running."
+      else
+        if PidFile.sane?(daemon)
+          puts "Daemon is running."
+        else
+          puts "Pid file found, but process is not present. It may have died."
+        end
+      end
+      
     end
   end
 end
