@@ -1,3 +1,9 @@
+== 0.1.4 2008-01-31
+
+* 2 enhancements:
+  * Added status command (checks PID file and process itself)
+  * Added proper daemon start checking
+
 == 0.1.2 2007-07-08
 
 * 2 minor enhancements:
